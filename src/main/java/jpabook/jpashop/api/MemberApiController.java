@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +24,11 @@ public class MemberApiController {
         return new CreateMemberResponse(id);
     }
 
+    @GetMapping("/api/v1/members")
+    public List<Member> membersV1(){
+        return memberService.findMembers();
+    }
+
     @PostMapping("/api/v2/members")
     public CreateMemberResponse saveMemberV2(@RequestBody @Valid CreateMemberRequest createMemberRequest){
         Member member = new Member();
@@ -29,6 +36,17 @@ public class MemberApiController {
 
         Long id = memberService.join(member);
         return new CreateMemberResponse(id);
+    }
+
+    @GetMapping("/api/v2/members")
+    public Result membersV2(){
+
+        List<Member> members = memberService.findMembers();
+        List<MemberDto> memberCollect = members.stream()
+                .map(m -> new MemberDto(m.getName(),m.getId()))
+                .collect(Collectors.toList());
+
+        return new Result(memberCollect,memberCollect.size());
     }
 
     @PutMapping("/api/v2/members/{id}")
@@ -55,6 +73,21 @@ public class MemberApiController {
     }
 
     @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private T data;
+        private int count;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class MemberDto{
+        private String name;
+        private Long id;
+    }
+
+    @Data
+    @AllArgsConstructor
     static class UpdateMemberRequest{
         @NotEmpty
         private String name;
