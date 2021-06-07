@@ -54,7 +54,7 @@ public class OrderServiceTest {
     }
 
     private Book getBook(String book1, int price, int stockQuantity) {
-        Book book = new Book();
+        Book book = Book.newMakeBook();
         book.setName(book1);
         book.setPrice(price);
         book.setStockQuantity(stockQuantity);
