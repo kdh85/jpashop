@@ -1,5 +1,6 @@
 package jpabook.jpashop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jpabook.jpashop.domain.item.Item;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class OrderItem {
     @JoinColumn(name="item_id")
     private Item item;
 
+    @JsonIgnore//양방향 관계일때는 무조건 한쪽을 끊어줘야 api 무한루프가 발생하지 않는다.
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="order_id")
     private Order order;
